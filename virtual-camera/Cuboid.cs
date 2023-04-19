@@ -12,8 +12,8 @@ namespace virtual_camera;
 public class Cuboid
 {
     private readonly Point3D[] _vertices;
-    public List<Polygon> Walls;
-    public readonly Color Color = Colors.CornflowerBlue;
+    private List<Polygon> _walls;
+    private Brush _brush = Brushes.CornflowerBlue;
 
     // Construct a cuboid by two opposite points
     public Cuboid(Point3D a, Point3D b)
@@ -49,11 +49,15 @@ public class Cuboid
         {
             projectedVertices.Add(Projector.ProjectPoint(vertex));
         }
-        var projectedCuboid = new Cuboid(projectedVertices.ToArray());
+
+        var projectedCuboid = new Cuboid(projectedVertices.ToArray())
+        {
+            _brush = _brush
+        };
         projectedCuboid.GenerateWalls();
         return projectedCuboid;
     }
-    
+
     public Cuboid Translate(CameraMoveDirection direction)
     {
         var translatedVertices = new List<Point3D>();
@@ -61,7 +65,8 @@ public class Cuboid
         {
             translatedVertices.Add(Translator.TranslatePoint(vertex, direction));
         }
-        return new Cuboid(translatedVertices.ToArray());
+
+        return new Cuboid(translatedVertices.ToArray()) { _brush = _brush };
     }
 
     public Cuboid Rotate(CameraRotation rotation)
@@ -71,20 +76,21 @@ public class Cuboid
         {
             rotatedVertices.Add(Rotator.RotatePoint(vertex, rotation));
         }
-        return new Cuboid(rotatedVertices.ToArray());
+
+        return new Cuboid(rotatedVertices.ToArray()) { _brush = _brush };
     }
-    
+
     // Only for projected cuboids
     private void GenerateWalls()
     {
-        Walls = new List<Polygon>(6);
+        _walls = new List<Polygon>(6);
 
-        CreatePolygonWithVertices(0,1,2,3);
-        CreatePolygonWithVertices(0,1,6,7);
-        CreatePolygonWithVertices(0,3,4,7);
-        CreatePolygonWithVertices(1,2,5,6);
-        CreatePolygonWithVertices(2,3,4,5);
-        CreatePolygonWithVertices(4,5,6,7);
+        CreatePolygonWithVertices(0, 1, 2, 3);
+        CreatePolygonWithVertices(0, 1, 6, 7);
+        CreatePolygonWithVertices(0, 3, 4, 7);
+        CreatePolygonWithVertices(1, 2, 5, 6);
+        CreatePolygonWithVertices(2, 3, 4, 5);
+        CreatePolygonWithVertices(4, 5, 6, 7);
     }
 
     // Create a polygon with the given vertices (by index)
@@ -94,12 +100,18 @@ public class Cuboid
         var b = _vertices[indexB];
         var c = _vertices[indexC];
         var d = _vertices[indexD];
-        
 
-        if (a.Z < 0 || b.Z < 0 || c.Z < 0 || d.Z < 0)
+        var verticesOutOfSight = 0;
+        if (a.Z < 0) verticesOutOfSight++;
+        if (b.Z < 0) verticesOutOfSight++;
+        if (c.Z < 0) verticesOutOfSight++;
+        if (d.Z < 0) verticesOutOfSight++;
+
+        if (verticesOutOfSight >= 2)
         {
             return;
         }
+
         var points = new PointCollection
         {
             new Point(a.X, a.Y),
@@ -110,8 +122,30 @@ public class Cuboid
 
         var poly = new Polygon
         {
-            Points = points
+            Points = points,
+            Stroke = _brush
         };
-        Walls.Add(poly);
+
+        _walls.Add(poly);
+    }
+
+    public List<Polygon> GetWalls()
+    {
+        return _walls;
+    }
+
+    public void SetColor(int i)
+    {
+        _brush = (i % 8) switch
+        {
+            1 => Brushes.YellowGreen,
+            2 => Brushes.ForestGreen,
+            3 => Brushes.OrangeRed,
+            4 => Brushes.DarkOrchid,
+            5 => Brushes.Blue,
+            6 => Brushes.Yellow,
+            7 => Brushes.Red,
+            _ => Brushes.CornflowerBlue
+        };
     }
 }

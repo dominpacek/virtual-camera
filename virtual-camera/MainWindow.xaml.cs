@@ -23,10 +23,10 @@ public partial class MainWindow : Window
         InitializeComponent();
         Window.Width = CameraProperties.WINDOW_WIDTH;
         Window.Height = CameraProperties.WINDOW_HEIGHT;
-        CompositionTarget.Rendering += Render;
+        Render();
     }
 
-    private void Render(Object? sender, EventArgs e)
+    private void Render()
     {
         Canvas.Children.Clear();
         _walls.Clear();
@@ -34,10 +34,12 @@ public partial class MainWindow : Window
 
         foreach (var cuboid in projectedCuboids)
         {
-            foreach (var polygon in cuboid.Walls)
+            foreach (var polygon in cuboid.GetWalls())
             {
-                polygon.Stroke = Brushes.CornflowerBlue;
-                
+                if (!CameraProperties.GetTransparentMode())
+                {
+                    polygon.Fill = polygon.Stroke;
+                }
                 _walls.Add(polygon);
             }
         }
@@ -52,6 +54,9 @@ public partial class MainWindow : Window
     {
         switch (e.Key)
         {
+            case Key.T:
+                CameraProperties.ToggleTransparentMode();
+                break;
             case Key.W:
                 _cuboids = Translator.TranslateCuboids(_cuboids, CameraMoveDirection.Forward);
                 break;
@@ -94,12 +99,25 @@ public partial class MainWindow : Window
             case Key.OemMinus:
                 CameraProperties.ZoomOut();
                 break;
+            case Key.D0:
+                CameraProperties.ResetZoom();
+                break;
             case Key.D1:
                 _cuboids = FileReader.LoadScene(1);
                 break;
             case Key.D2:
                 _cuboids = FileReader.LoadScene(2);
                 break;
+            case Key.D3:
+                _cuboids = FileReader.LoadScene(3);
+                break;
+            case Key.D4:
+                _cuboids = FileReader.LoadScene(4);
+                break;
+            case Key.D9:
+                _cuboids = FileReader.LoadScene(9);
+                break;
         }
+        Render();
     }
 }

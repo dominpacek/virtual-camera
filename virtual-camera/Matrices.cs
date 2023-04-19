@@ -1,22 +1,31 @@
 ﻿using System;
 using System.Diagnostics;
 using MathNet.Numerics.LinearAlgebra;
-using MathNet.Numerics.LinearAlgebra.Double;
 using virtual_camera.Enums;
 
 namespace virtual_camera;
 
 public class Matrices
 {
-    public static Matrix<double> GetProjectionMatrix(double vpd)
+    private static int _lastVpd;
+    private static Matrix<double> _lastProjectionMatrix;
+    
+    public static Matrix<double> GetProjectionMatrix(int vpd)
     {
-        return Matrix<double>.Build.DenseOfArray(new double[,]
+        if (_lastVpd == vpd)
+        {
+            return _lastProjectionMatrix;
+        }
+
+        _lastVpd = vpd;
+        _lastProjectionMatrix = Matrix<double>.Build.DenseOfArray(new double[,]
         {
             { 1, 0, 0, 0 },
             { 0, 1, 0, 0 },
             { 0, 0, 1, 0 },
-            { 0, 0, 1 / vpd, 0 }
+            { 0, 0, 1.0 / vpd, 0 }
         });
+        return _lastProjectionMatrix;
     }
 
     private static Matrix<double> GetTranslationMatrix(double dx, double dy, double dz)

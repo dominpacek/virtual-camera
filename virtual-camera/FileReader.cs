@@ -59,12 +59,15 @@ public class FileReader
                 continue;
             }
 
-            var cube = new Cuboid(a, b);
-
-            cuboids.Add(cube);
+            var cuboid = new Cuboid(a, b);
+            cuboid.SetColor(i/2);
+            
+            cuboids.Add(cuboid);
+            
+            
             Debug.WriteLine($"Success: Cuboid {i} generated");
         }
-
+        
         return cuboids;
     }
 }

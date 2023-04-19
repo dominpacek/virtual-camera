@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.Windows.Shapes;
 
 namespace virtual_camera;
 
-public class Camera
+public static class CameraProperties
 {
     public const int WINDOW_WIDTH = 1200;
     public const int WINDOW_HEIGHT = 800;
@@ -10,9 +11,8 @@ public class Camera
     public const double RotationDegrees = 3;
     private static double _viewPlaneDistance = 1000;
     private const double vpdStep = 100;
-
-    private List<Cuboid> _cuboids = FileReader.LoadScene(1);
-
+    
+    
     public static double GetViewPlaneDistance()
     {
         return _viewPlaneDistance;

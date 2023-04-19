@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Shapes;
 using virtual_camera.Enums;
 using virtual_camera.Transformations;
 
@@ -14,31 +15,36 @@ namespace virtual_camera;
 public partial class MainWindow : Window
 {
     private List<Cuboid> _cuboids = FileReader.LoadScene(1);
+    private List<Polygon> _walls = new List<Polygon>();
 
 
     public MainWindow()
     {
         InitializeComponent();
-        Window.Width = Camera.WINDOW_WIDTH;
-        Window.Height = Camera.WINDOW_HEIGHT;
+        Window.Width = CameraProperties.WINDOW_WIDTH;
+        Window.Height = CameraProperties.WINDOW_HEIGHT;
         CompositionTarget.Rendering += Render;
     }
 
     private void Render(Object? sender, EventArgs e)
     {
         Canvas.Children.Clear();
+        _walls.Clear();
         var projectedCuboids = Projector.ProjectCuboids(_cuboids);
 
         foreach (var cuboid in projectedCuboids)
         {
-            var w1 = cuboid.Walls[1].Points;
-            var w4 = cuboid.Walls[4].Points;
-            
             foreach (var polygon in cuboid.Walls)
             {
                 polygon.Stroke = Brushes.CornflowerBlue;
-                Canvas.Children.Add(polygon);
+                
+                _walls.Add(polygon);
             }
+        }
+        
+        foreach (var wall in _walls)
+        {
+            Canvas.Children.Add(wall);
         }
     }
    
@@ -83,10 +89,16 @@ public partial class MainWindow : Window
                 _cuboids = Rotator.RotateCuboids(_cuboids, CameraRotation.Right);
                 break;
             case Key.OemPlus:
-                Camera.ZoomIn();
+                CameraProperties.ZoomIn();
                 break;
             case Key.OemMinus:
-                Camera.ZoomOut();
+                CameraProperties.ZoomOut();
+                break;
+            case Key.D1:
+                _cuboids = FileReader.LoadScene(1);
+                break;
+            case Key.D2:
+                _cuboids = FileReader.LoadScene(2);
                 break;
         }
     }

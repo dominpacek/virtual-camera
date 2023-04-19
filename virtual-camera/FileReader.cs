@@ -14,26 +14,29 @@ public class FileReader
         return lines.Where(l => l[0] != '#');
     }
 
-    public static void LoadScene(int sceneNumber)
+    public static List<Cuboid> LoadScene(int sceneNumber)
     {
-        var fileContent = ReadFile("scene" + sceneNumber + ".txt");
-        GenerateCubes(fileContent);
+        Debug.WriteLine($"Loading scene {sceneNumber}...");
+        var fileContent = ReadFile("Scenes/scene" + sceneNumber + ".txt");
+        var cuboids = GenerateCuboids(fileContent);
+        return cuboids;
     }
 
-    private static void GenerateCubes(IEnumerable<string> lines)
+    private static List<Cuboid> GenerateCuboids(IEnumerable<string> lines)
     {
+        var cuboids = new List<Cuboid>();
         if (lines.Count() % 2 != 0)
         {
-            Debug.WriteLine("[GenerateCubes] Error: There's a point without a pair in the scene file");
-            return;
+            Debug.WriteLine("[GenerateCuboids] Error: There's a point without a pair in the scene file");
+            return cuboids;
         }
-        
+
         for (var i = 0; i < lines.Count(); i += 2)
         {
             var lineA = lines.ElementAt(i).Split(",");
             if (lineA.Length != 3)
             {
-                Debug.WriteLine($"[GenerateCubes] Error: Point {i} is not in the correct format");
+                Debug.WriteLine($"[GenerateCuboids] Error: Point {i} is not in the correct format");
                 continue;
             }
 
@@ -41,7 +44,7 @@ public class FileReader
 
             if (lineB.Length != 3)
             {
-                Debug.WriteLine($"[GenerateCubes] Error: Point {i + 1} is not in the correct format");
+                Debug.WriteLine($"[GenerateCuboids] Error: Point {i + 1} is not in the correct format");
                 continue;
             }
 
@@ -51,13 +54,17 @@ public class FileReader
             if (a.X == b.X || a.Y == b.Y || a.Z == b.Z)
             {
                 Debug.WriteLine(
-                    $"[GenerateCubes] Error: Cube {i / 2 + 1} can't be constructed by two points on the same axis");
+                    $"[GenerateCuboids] Error: Cuboid {i / 2 + 1} can't be constructed by two points on the same axis");
                 Debug.WriteLine($"A: {a}, B: {b}");
                 continue;
             }
-            
-            var cube = new Cube(a, b);
-            Debug.WriteLine($"Success: Cube {i} generated");
+
+            var cube = new Cuboid(a, b);
+
+            cuboids.Add(cube);
+            Debug.WriteLine($"Success: Cuboid {i} generated");
         }
+
+        return cuboids;
     }
 }

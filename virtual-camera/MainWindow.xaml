@@ -1,4 +1,5 @@
 ﻿<Window x:Class="virtual_camera.MainWindow"
+        Name="Window"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -6,9 +7,9 @@
         mc:Ignorable="d"
         Title="virtual-camera" 
         Height="800" Width="1200"
-        ResizeMode="CanMinimize">
+        ResizeMode="CanResize"
+        Background="Black">
     <Canvas x:Name="Canvas" 
-            Height="800" Width="1200"
-            Background="Black">        
+            Height="0" Width="0">        
     </Canvas>
 </Window>

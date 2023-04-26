@@ -24,7 +24,7 @@ public static class Translator
     
     public static Point3D TranslatePoint(Point3D point, CameraMoveDirection direction)
     {
-        var translationMatrix = Matrices.GetTranslationMatrix(direction, CameraProperties.TranslationStep);
+        var translationMatrix = Matrices.GetTranslationMatrix(direction, Camera.TranslationStep);
         
         Vector<double> pointVector = new DenseVector(new double[] {point.X, point.Y, point.Z, 1});
         Vector<double> translatedVector = translationMatrix * pointVector;

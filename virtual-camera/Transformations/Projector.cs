@@ -21,7 +21,7 @@ public static class Projector
 
     public static Point3D ProjectPoint(Point3D point)
     {
-        var vpd = CameraProperties.GetViewPlaneDistance();
+        var vpd = Camera.ViewPlaneDistance;
         var projectionMatrix = Matrices.GetProjectionMatrix(vpd);
 
         Vector<double> pointVector = new DenseVector(new double[] { point.X, point.Y, point.Z, 1 });

@@ -16,6 +16,7 @@ public class FileReader
 
     public static List<Cuboid> LoadScene(int sceneNumber)
     {
+        Camera.ResetPosition();
         Debug.WriteLine($"Loading scene {sceneNumber}...");
         var fileContent = ReadFile("Scenes/scene" + sceneNumber + ".txt");
         var cuboids = GenerateCuboids(fileContent);

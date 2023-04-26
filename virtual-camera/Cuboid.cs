@@ -11,9 +11,10 @@ namespace virtual_camera;
 
 public class Cuboid
 {
-    private readonly Point3D[] _vertices;
-    private List<Polygon> _walls;
-    private Brush _brush = Brushes.CornflowerBlue;
+    private readonly Point3D[] _vertices3D;
+    private List<Polygon> _walls2D;
+    private Brush _edgeBrush = Brushes.CornflowerBlue;
+    private Brush _wallBrush = Brushes.DodgerBlue;
 
     // Construct a cuboid by two opposite points
     public Cuboid(Point3D a, Point3D b)
@@ -27,32 +28,33 @@ public class Cuboid
         vertices[5] = b;
         vertices[6] = new Point3D(b.X, b.Y, a.Z);
         vertices[7] = new Point3D(a.X, b.Y, a.Z);
-        _vertices = vertices;
+        _vertices3D = vertices;
     }
 
     // Construct a cuboid by an array of vertices
-    private Cuboid(Point3D[] vertices)
+    private Cuboid(Point3D[] vertices3D)
     {
-        var n = vertices.Length;
+        var n = vertices3D.Length;
         if (n != 8)
         {
             throw new ArgumentException($"Cuboid must have 8 vertices. Got {n}");
         }
 
-        _vertices = vertices;
+        _vertices3D = vertices3D;
     }
 
     public Cuboid Project()
     {
         var projectedVertices = new List<Point3D>();
-        foreach (var vertex in _vertices)
+        foreach (var vertex in _vertices3D)
         {
             projectedVertices.Add(Projector.ProjectPoint(vertex));
         }
 
         var projectedCuboid = new Cuboid(projectedVertices.ToArray())
         {
-            _brush = _brush
+            _edgeBrush = _edgeBrush,
+            _wallBrush = _wallBrush
         };
         projectedCuboid.GenerateWalls();
         return projectedCuboid;
@@ -61,29 +63,29 @@ public class Cuboid
     public Cuboid Translate(CameraMoveDirection direction)
     {
         var translatedVertices = new List<Point3D>();
-        foreach (var vertex in _vertices)
+        foreach (var vertex in _vertices3D)
         {
             translatedVertices.Add(Translator.TranslatePoint(vertex, direction));
         }
 
-        return new Cuboid(translatedVertices.ToArray()) { _brush = _brush };
+        return new Cuboid(translatedVertices.ToArray()) { _edgeBrush = _edgeBrush, _wallBrush = _wallBrush};
     }
 
     public Cuboid Rotate(CameraRotation rotation)
     {
         var rotatedVertices = new List<Point3D>();
-        foreach (var vertex in _vertices)
+        foreach (var vertex in _vertices3D)
         {
             rotatedVertices.Add(Rotator.RotatePoint(vertex, rotation));
         }
 
-        return new Cuboid(rotatedVertices.ToArray()) { _brush = _brush };
+        return new Cuboid(rotatedVertices.ToArray()) { _edgeBrush = _edgeBrush, _wallBrush = _wallBrush};
     }
 
     // Only for projected cuboids
     private void GenerateWalls()
     {
-        _walls = new List<Polygon>(6);
+        _walls2D = new List<Polygon>(6);
 
         CreatePolygonWithVertices(0, 1, 2, 3);
         CreatePolygonWithVertices(0, 1, 6, 7);
@@ -96,10 +98,10 @@ public class Cuboid
     // Create a polygon with the given vertices (by index)
     private void CreatePolygonWithVertices(int indexA, int indexB, int indexC, int indexD)
     {
-        var a = _vertices[indexA];
-        var b = _vertices[indexB];
-        var c = _vertices[indexC];
-        var d = _vertices[indexD];
+        var a = _vertices3D[indexA];
+        var b = _vertices3D[indexB];
+        var c = _vertices3D[indexC];
+        var d = _vertices3D[indexD];
 
         var verticesOutOfSight = 0;
         if (a.Z < 0) verticesOutOfSight++;
@@ -107,7 +109,7 @@ public class Cuboid
         if (c.Z < 0) verticesOutOfSight++;
         if (d.Z < 0) verticesOutOfSight++;
 
-        if (verticesOutOfSight >= 2)
+        if (verticesOutOfSight > 0)
         {
             return;
         }
@@ -123,29 +125,41 @@ public class Cuboid
         var poly = new Polygon
         {
             Points = points,
-            Stroke = _brush
+            Stroke = _edgeBrush,
+            Fill = _wallBrush
         };
 
-        _walls.Add(poly);
+        _walls2D.Add(poly);
     }
 
     public List<Polygon> GetWalls()
     {
-        return _walls;
+        return _walls2D;
     }
 
     public void SetColor(int i)
     {
-        _brush = (i % 8) switch
+        _edgeBrush = (i % 8) switch
         {
             1 => Brushes.YellowGreen,
             2 => Brushes.ForestGreen,
             3 => Brushes.OrangeRed,
-            4 => Brushes.DarkOrchid,
+            4 => Brushes.MediumOrchid,
             5 => Brushes.Blue,
-            6 => Brushes.Yellow,
+            6 => Brushes.Gold,
             7 => Brushes.Red,
             _ => Brushes.CornflowerBlue
+        };
+        _wallBrush = (i % 8) switch
+        {
+            1 => Brushes.GreenYellow,
+            2 => Brushes.Green,
+            3 => Brushes.DarkOrange,
+            4 => Brushes.DarkOrchid,
+            5 => Brushes.DarkBlue,
+            6 => Brushes.Yellow,
+            7 => Brushes.DarkRed,
+            _ => Brushes.DodgerBlue
         };
     }
 }

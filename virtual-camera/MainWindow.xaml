@@ -5,11 +5,19 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="virtual-camera" 
+        Title="virtual-camera"
         Height="800" Width="1200"
         ResizeMode="CanResize"
         Background="Black">
-    <Canvas x:Name="Canvas" 
-            Height="0" Width="0">        
-    </Canvas>
+    <Grid>
+        <Canvas x:Name="Canvas"
+                Height="0" Width="0">
+        </Canvas>
+        <StackPanel x:Name="StatusPanel">
+            <TextBlock x:Name="CoordBox" Foreground="LightGray" Text="X:0 Y:0 Z:0"></TextBlock>
+            <TextBlock x:Name="RotationBox" Foreground="LightGray" Text="Rotation: X0°, Y0°, Z0°"></TextBlock>
+            <TextBlock x:Name="ZoomBox" Foreground="LightGray" Text="Zoom: 0%"></TextBlock>
+        </StackPanel>
+
+    </Grid>
 </Window>

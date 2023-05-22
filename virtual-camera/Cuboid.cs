@@ -144,10 +144,10 @@ public class Cuboid
             2 => Brushes.ForestGreen,
             3 => Brushes.OrangeRed,
             4 => Brushes.MediumOrchid,
-            5 => Brushes.Blue,
+            5 => Brushes.CornflowerBlue,
             6 => Brushes.Gold,
             7 => Brushes.Red,
-            _ => Brushes.CornflowerBlue
+            _ => Brushes.Blue
         };
         _wallBrush = (i % 8) switch
         {
@@ -155,10 +155,10 @@ public class Cuboid
             2 => Brushes.Green,
             3 => Brushes.DarkOrange,
             4 => Brushes.DarkOrchid,
-            5 => Brushes.DarkBlue,
+            5 => Brushes.DodgerBlue,
             6 => Brushes.Yellow,
             7 => Brushes.DarkRed,
-            _ => Brushes.DodgerBlue
+            _ => Brushes.DarkBlue
         };
     }
 }

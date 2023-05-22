@@ -25,7 +25,7 @@ public static class Rotator
     {
         var rotationMatrix = Matrices.GetRotationMatrix(rotation, Camera.RotationDegrees);
 
-        Vector<double> pointVector = new DenseVector(new double[] { point.X, point.Y, point.Z, 1 });
+        Vector<double> pointVector = new DenseVector(new[] { point.X, point.Y, point.Z, 1 });
         Vector<double> rotatedVector = rotationMatrix * pointVector;
 
         var resultPoint = new Point3D(rotatedVector[0], rotatedVector[1], rotatedVector[2]);

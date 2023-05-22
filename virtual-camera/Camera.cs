@@ -11,19 +11,10 @@ public static class Camera
 
     private const int DefaultVpd = 800;
     public static int ViewPlaneDistance { get; private set; } = DefaultVpd;
-    private static double _zoomPercent = 0;
+    private static double _zoomPercent;
     
-    public static double X { get; set; } = 0;
-    public static double Y { get; set; } = 0;
-    public static double Z { get; set; } = 0;
-    
-    public static double XRotation { get; set; } = 0;
-    public static double YRotation { get; set; } = 0;
-    public static double ZRotation { get; set; } = 0;
 
-
-
-    public static bool TransparentMode { get; private set; } = false;
+    public static bool TransparentMode { get; private set; }
 
 
     public static void ZoomIn()
@@ -55,16 +46,5 @@ public static class Camera
     {
         return $"{_zoomPercent}%";
     }
-
-    public static void ResetPosition()
-    {
-        X = 0;
-        Y = 0;
-        Z = 0;
-        XRotation = 0;
-        YRotation = 0;
-        ZRotation = 0;
-        ResetZoom();
-        _zoomPercent = 0;
-    }
+    
 }

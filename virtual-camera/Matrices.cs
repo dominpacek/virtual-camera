@@ -5,7 +5,7 @@ using virtual_camera.Enums;
 
 namespace virtual_camera;
 
-public class Matrices
+public static class Matrices
 {
     private static int _lastVpd;
     private static Matrix<double> _lastProjectionMatrix;
@@ -18,7 +18,7 @@ public class Matrices
         }
 
         _lastVpd = vpd;
-        _lastProjectionMatrix = Matrix<double>.Build.DenseOfArray(new double[,]
+        _lastProjectionMatrix = Matrix<double>.Build.DenseOfArray(new[,]
         {
             { 1, 0, 0, 0 },
             { 0, 1, 0, 0 },
@@ -30,7 +30,7 @@ public class Matrices
 
     private static Matrix<double> GetTranslationMatrix(double dx, double dy, double dz)
     {
-        return Matrix<double>.Build.DenseOfArray(new double[,]
+        return Matrix<double>.Build.DenseOfArray(new[,]
         {
             { 1, 0, 0, dx },
             { 0, 1, 0, dy },
@@ -74,21 +74,21 @@ public class Matrices
 
         return rotation switch
         {
-            CameraRotation.Left or CameraRotation.Right => Matrix<double>.Build.DenseOfArray(new double[,]
+            CameraRotation.Left or CameraRotation.Right => Matrix<double>.Build.DenseOfArray(new[,]
             {
                 { cos, 0, sin, 0 },
                 { 0, 1, 0, 0 },
                 { -sin, 0, cos, 0 },
                 { 0, 0, 0, 1 }
             }),
-            CameraRotation.Up or CameraRotation.Down => Matrix<double>.Build.DenseOfArray(new double[,]
+            CameraRotation.Up or CameraRotation.Down => Matrix<double>.Build.DenseOfArray(new[,]
             {
                 { 1, 0, 0, 0 },
                 { 0, cos, -sin, 0 },
                 { 0, sin, cos, 0 },
                 { 0, 0, 0, 1 }
             }),
-            _ => Matrix<double>.Build.DenseOfArray(new double[,]
+            _ => Matrix<double>.Build.DenseOfArray(new[,]
             {
                 { cos, -sin, 0, 0 },
                 { sin, cos, 0, 0 },

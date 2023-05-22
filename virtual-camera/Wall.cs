@@ -28,19 +28,9 @@ public class Wall : IComparable<Wall>
         // -1 means that this wall is further from the camera than the other wall
         // used for sorting from furthest to closest for Painter's algorithm
         
-        // if (GetCenterZ() > other.GetCenterZ()) return -1;
-        // return 1;
-        
-        
         return PlaneMath.IsPointInFrontOfPlane(GetCenter(), other.Points);
     }
-
-    private double GetCenterZ()
-    {
-        var sum = Points.Sum(point => point.Z);
-        return sum / 4;
-    }
-
+    
     private Point3D GetCenter()
     {
         var x = Points.Sum(point => point.X) / 4;

@@ -26,7 +26,7 @@ public static class Translator
     {
         var translationMatrix = Matrices.GetTranslationMatrix(direction, Camera.TranslationStep);
         
-        Vector<double> pointVector = new DenseVector(new double[] {point.X, point.Y, point.Z, 1});
+        Vector<double> pointVector = new DenseVector(new[] {point.X, point.Y, point.Z, 1});
         Vector<double> translatedVector = translationMatrix * pointVector;
 
         var resultPoint = new Point3D(translatedVector[0], translatedVector[1], translatedVector[2]);

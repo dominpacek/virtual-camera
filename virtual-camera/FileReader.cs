@@ -1,22 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Windows.Media.Media3D;
 
 namespace virtual_camera;
 
-public class FileReader
+public static class FileReader
 {
     private static IEnumerable<string> ReadFile(string path)
     {
-        var lines = System.IO.File.ReadAllLines(path);
+        var lines = File.ReadAllLines(path);
         return lines.Where(l => l[0] != '#');
     }
 
     public static List<Cuboid> LoadScene(int sceneNumber)
     {
-        Camera.ResetPosition();
+        Camera.ResetZoom();
         Debug.WriteLine($"Loading scene {sceneNumber}...");
         var fileContent = ReadFile("Scenes/scene" + sceneNumber + ".txt");
         var cuboids = GenerateCuboids(fileContent);

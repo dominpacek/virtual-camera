@@ -14,8 +14,6 @@
                 Height="0" Width="0">
         </Canvas>
         <StackPanel x:Name="StatusPanel">
-            <TextBlock x:Name="CoordBox" Foreground="LightGray" Text="X:0 Y:0 Z:0"></TextBlock>
-            <TextBlock x:Name="RotationBox" Foreground="LightGray" Text="Rotation: X0°, Y0°, Z0°"></TextBlock>
             <TextBlock x:Name="ZoomBox" Foreground="LightGray" Text="Zoom: 0%"></TextBlock>
         </StackPanel>
 

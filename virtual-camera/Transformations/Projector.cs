@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Media.Media3D;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Double;
@@ -10,10 +11,10 @@ public static class Projector
 
     public static IEnumerable<Cuboid> ProjectCuboids(IEnumerable<Cuboid> cuboids)
     {
-        var projectedCuboids = new List<Cuboid>();
-        foreach (var cuboid in cuboids)
+        var projectedCuboids = cuboids.ToList();
+        foreach (var cuboid in projectedCuboids)
         {
-            projectedCuboids.Add(cuboid.Project());
+            cuboid.Project();
         }
 
         return projectedCuboids;

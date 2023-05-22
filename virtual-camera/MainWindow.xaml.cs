@@ -14,7 +14,7 @@ namespace virtual_camera;
 public partial class MainWindow : Window
 {
     private List<Cuboid> _cuboids = FileReader.LoadScene(1);
-    private List<Polygon> _walls = new List<Polygon>();
+    private List<Wall> _walls = new List<Wall>();
     
 
     public MainWindow()
@@ -38,19 +38,17 @@ public partial class MainWindow : Window
 
         foreach (var cuboid in projectedCuboids)
         {
-            foreach (var polygon in cuboid.GetWalls())
+            foreach (var wall in cuboid.GetWalls())
             {
-                if (Camera.TransparentMode)
-                {
-                    polygon.Fill = null;
-                }
-                _walls.Add(polygon);
+                var polygon = wall.Projection;
+                if (Camera.TransparentMode)  polygon.Fill = null;
+                _walls.Add(wall);
             }
         }
         
         foreach (var wall in _walls)
         {
-            Canvas.Children.Add(wall);
+            Canvas.Children.Add(wall.Projection);
         }
         
         UpdateStatus();

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows;
+using System.Windows.Documents;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
 using System.Windows.Shapes;
@@ -11,12 +12,13 @@ namespace virtual_camera;
 
 public class Cuboid
 {
-    private readonly Point3D[] _vertices3D;
-    private List<Polygon> _walls2D;
+    private readonly Point3D[] _vertices;
+    private List<Wall> _walls;
     private Brush _edgeBrush = Brushes.CornflowerBlue;
     private Brush _wallBrush = Brushes.DodgerBlue;
 
     // Construct a cuboid by two opposite points
+    // for loading from file
     public Cuboid(Point3D a, Point3D b)
     {
         Point3D[] vertices = new Point3D[8];
@@ -28,42 +30,37 @@ public class Cuboid
         vertices[5] = b;
         vertices[6] = new Point3D(b.X, b.Y, a.Z);
         vertices[7] = new Point3D(a.X, b.Y, a.Z);
-        _vertices3D = vertices;
+        _vertices = vertices;
     }
 
     // Construct a cuboid by an array of vertices
-    private Cuboid(Point3D[] vertices3D)
+    private Cuboid(Point3D[] vertices)
     {
-        var n = vertices3D.Length;
+        var n = vertices.Length;
         if (n != 8)
         {
             throw new ArgumentException($"Cuboid must have 8 vertices. Got {n}");
         }
 
-        _vertices3D = vertices3D;
+        _vertices = vertices;
     }
 
-    public Cuboid Project()
+    public void Project()
     {
-        var projectedVertices = new List<Point3D>();
-        foreach (var vertex in _vertices3D)
-        {
-            projectedVertices.Add(Projector.ProjectPoint(vertex));
-        }
+        _walls = new List<Wall>(6);
 
-        var projectedCuboid = new Cuboid(projectedVertices.ToArray())
-        {
-            _edgeBrush = _edgeBrush,
-            _wallBrush = _wallBrush
-        };
-        projectedCuboid.GenerateWalls();
-        return projectedCuboid;
+        _walls.Add(CreateWallWithVertices(0, 1, 2, 3));
+        _walls.Add(CreateWallWithVertices(0, 1, 6, 7));
+        _walls.Add(CreateWallWithVertices(0, 3, 4, 7));
+        _walls.Add(CreateWallWithVertices(1, 2, 5, 6));
+        _walls.Add(CreateWallWithVertices(2, 3, 4, 5));
+        _walls.Add(CreateWallWithVertices(4, 5, 6, 7));
     }
 
     public Cuboid Translate(CameraMoveDirection direction)
     {
         var translatedVertices = new List<Point3D>();
-        foreach (var vertex in _vertices3D)
+        foreach (var vertex in _vertices)
         {
             translatedVertices.Add(Translator.TranslatePoint(vertex, direction));
         }
@@ -74,34 +71,36 @@ public class Cuboid
     public Cuboid Rotate(CameraRotation rotation)
     {
         var rotatedVertices = new List<Point3D>();
-        foreach (var vertex in _vertices3D)
+        foreach (var vertex in _vertices)
         {
             rotatedVertices.Add(Rotator.RotatePoint(vertex, rotation));
         }
 
         return new Cuboid(rotatedVertices.ToArray()) { _edgeBrush = _edgeBrush, _wallBrush = _wallBrush};
     }
+    
 
-    // Only for projected cuboids
-    private void GenerateWalls()
+    private Wall CreateWallWithVertices(int indexA, int indexB, int indexC, int indexD)
     {
-        _walls2D = new List<Polygon>(6);
+        var poly = CreatePolygonWithVertices(indexA, indexB, indexC, indexD);
+        var points = new List<Point3D>()
+        {
+            _vertices[indexA],
+            _vertices[indexB],
+            _vertices[indexC],
+            _vertices[indexD]
+        };
 
-        CreatePolygonWithVertices(0, 1, 2, 3);
-        CreatePolygonWithVertices(0, 1, 6, 7);
-        CreatePolygonWithVertices(0, 3, 4, 7);
-        CreatePolygonWithVertices(1, 2, 5, 6);
-        CreatePolygonWithVertices(2, 3, 4, 5);
-        CreatePolygonWithVertices(4, 5, 6, 7);
+        return new Wall(poly, points);
     }
-
+    
     // Create a polygon with the given vertices (by index)
-    private void CreatePolygonWithVertices(int indexA, int indexB, int indexC, int indexD)
+    private Polygon CreatePolygonWithVertices(int indexA, int indexB, int indexC, int indexD)
     {
-        var a = _vertices3D[indexA];
-        var b = _vertices3D[indexB];
-        var c = _vertices3D[indexC];
-        var d = _vertices3D[indexD];
+        var a = Projector.ProjectPoint(_vertices[indexA]);
+        var b = Projector.ProjectPoint(_vertices[indexB]);
+        var c = Projector.ProjectPoint(_vertices[indexC]);
+        var d = Projector.ProjectPoint(_vertices[indexD]);
 
         var verticesOutOfSight = 0;
         if (a.Z < 0) verticesOutOfSight++;
@@ -111,7 +110,7 @@ public class Cuboid
 
         if (verticesOutOfSight > 0)
         {
-            return;
+            return new Polygon();
         }
 
         var points = new PointCollection
@@ -129,12 +128,12 @@ public class Cuboid
             Fill = _wallBrush
         };
 
-        _walls2D.Add(poly);
+        return poly;
     }
 
-    public List<Polygon> GetWalls()
+    public List<Wall> GetWalls()
     {
-        return _walls2D;
+        return _walls;
     }
 
     public void SetColor(int i)

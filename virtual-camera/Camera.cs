@@ -23,7 +23,7 @@ public static class Camera
 
 
 
-    public static bool TransparentMode { get; private set; } = true;
+    public static bool TransparentMode { get; private set; } = false;
 
 
     public static void ZoomIn()

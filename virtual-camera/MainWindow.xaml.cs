@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Shapes;
 using virtual_camera.Enums;
 using virtual_camera.Transformations;
 
@@ -45,6 +44,7 @@ public partial class MainWindow : Window
                 _walls.Add(wall);
             }
         }
+        
         
         foreach (var wall in _walls)
         {

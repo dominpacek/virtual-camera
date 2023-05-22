@@ -10,7 +10,7 @@ using virtual_camera.Transformations;
 
 namespace virtual_camera;
 
-public class Cuboid
+public class Cuboid : IComparable<Cuboid>
 {
     private readonly Point3D[] _vertices;
     private List<Wall> _walls;
@@ -55,6 +55,8 @@ public class Cuboid
         _walls.Add(CreateWallWithVertices(1, 2, 5, 6));
         _walls.Add(CreateWallWithVertices(2, 3, 4, 5));
         _walls.Add(CreateWallWithVertices(4, 5, 6, 7));
+        
+        _walls.Sort();
     }
 
     public Cuboid Translate(CameraMoveDirection direction)
@@ -161,4 +163,26 @@ public class Cuboid
             _ => Brushes.DarkBlue
         };
     }
+    
+    private double GetCenterZ()
+    {
+        double sum = 0;
+        foreach (var wall in _walls)
+        {
+            foreach (var vertex in wall.Points)
+            {
+                sum += vertex.Z;
+            }
+
+        }
+
+        return sum / 6*4;
+    }
+    
+    public int CompareTo(Cuboid? other)
+    {
+        if (GetCenterZ() > other.GetCenterZ()) return -1;
+        return 1;
+    }
+    
 }

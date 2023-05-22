@@ -16,6 +16,7 @@ public static class Projector
         {
             cuboid.Project();
         }
+        projectedCuboids.Sort();
 
         return projectedCuboids;
     }

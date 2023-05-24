@@ -1,20 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using virtual_camera.Enums;
-using virtual_camera.Transformations;
+using virtual_camera.Logic;
+using virtual_camera.Objects;
 
 namespace virtual_camera;
 
 /// <summary>
 /// Interaction logic for MainWindow.xaml
 /// </summary>
-public partial class MainWindow : Window
+public partial class MainWindow 
 {
     private List<Cuboid> _cuboids = FileReader.LoadScene(1);
-    private List<Wall> _walls = new List<Wall>();
-    
+    private List<Wall> _walls = new ();
+
 
     public MainWindow()
     {
@@ -28,29 +30,31 @@ public partial class MainWindow : Window
         _cuboids[0] = _cuboids[0].Rotate(CameraRotation.CounterClockwise);
         Render();
     }
-    
+
     private void Render()
     {
         Canvas.Children.Clear();
         _walls.Clear();
-        var projectedCuboids = Projector.ProjectCuboids(_cuboids);
+        _cuboids = Projector.ProjectCuboids(_cuboids).ToList();
+        _cuboids.Sort();
 
-        foreach (var cuboid in projectedCuboids)
+        foreach (var cuboid in _cuboids)
         {
             foreach (var wall in cuboid.GetWalls())
             {
                 var polygon = wall.Projection;
-                if (Camera.TransparentMode)  polygon.Fill = null;
+                if (Camera.TransparentMode) polygon.Fill = null;
                 _walls.Add(wall);
             }
         }
-        
-        
+
+        _walls = Hider.SortWalls(_walls);
         foreach (var wall in _walls)
         {
             Canvas.Children.Add(wall.Projection);
         }
-        
+
+
         UpdateStatus();
     }
 
@@ -58,13 +62,13 @@ public partial class MainWindow : Window
     {
         ZoomBox.Text = $"Zoom: {Camera.GetZoomDisplay()}";
     }
-    
+
     protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
     {
         Camera.WindowWidth = sizeInfo.NewSize.Width;
         Camera.WindowHeight = sizeInfo.NewSize.Height;
     }
-   
+
     protected override void OnKeyDown(KeyEventArgs e)
     {
         switch (e.Key)
@@ -129,12 +133,14 @@ public partial class MainWindow : Window
             case Key.D4:
                 _cuboids = FileReader.LoadScene(4);
                 break;
+            case Key.D5:
+                _cuboids = FileReader.LoadScene(5);
+                break;
             case Key.D9:
                 _cuboids = FileReader.LoadScene(9);
                 break;
         }
+
         Render();
     }
-
-
 }

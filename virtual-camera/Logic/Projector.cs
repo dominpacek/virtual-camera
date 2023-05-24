@@ -3,8 +3,9 @@ using System.Linq;
 using System.Windows.Media.Media3D;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Double;
+using virtual_camera.Objects;
 
-namespace virtual_camera.Transformations;
+namespace virtual_camera.Logic;
 
 public static class Projector
 {
@@ -16,7 +17,6 @@ public static class Projector
         {
             cuboid.Project();
         }
-        projectedCuboids.Sort();
 
         return projectedCuboids;
     }
@@ -26,9 +26,9 @@ public static class Projector
         var vpd = Camera.ViewPlaneDistance;
         var projectionMatrix = Matrices.GetProjectionMatrix(vpd);
 
-        Vector<double> pointVector = new DenseVector(new[] { point.X, point.Y, point.Z, 1 });
+        var pointVector = new DenseVector(new[] { point.X, point.Y, point.Z, 1 });
 
-        Vector<double> projectedVector = projectionMatrix * pointVector;
+        var projectedVector = projectionMatrix * pointVector;
 
         var x = projectedVector[0];
         var y = projectedVector[1];

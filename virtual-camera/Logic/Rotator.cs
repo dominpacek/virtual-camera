@@ -3,8 +3,9 @@ using System.Windows.Media.Media3D;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Double;
 using virtual_camera.Enums;
+using virtual_camera.Objects;
 
-namespace virtual_camera.Transformations;
+namespace virtual_camera.Logic;
 
 public static class Rotator
 {
@@ -25,8 +26,8 @@ public static class Rotator
     {
         var rotationMatrix = Matrices.GetRotationMatrix(rotation, Camera.RotationDegrees);
 
-        Vector<double> pointVector = new DenseVector(new[] { point.X, point.Y, point.Z, 1 });
-        Vector<double> rotatedVector = rotationMatrix * pointVector;
+        var pointVector = new DenseVector(new[] { point.X, point.Y, point.Z, 1 });
+        var rotatedVector = rotationMatrix * pointVector;
 
         var resultPoint = new Point3D(rotatedVector[0], rotatedVector[1], rotatedVector[2]);
         return resultPoint;

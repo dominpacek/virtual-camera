@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
-using System.Windows.Shapes;
 using virtual_camera.Enums;
-using virtual_camera.Transformations;
+using virtual_camera.Logic;
 
-namespace virtual_camera;
+namespace virtual_camera.Objects;
 
 public class Cuboid : IComparable<Cuboid>
 {
@@ -83,7 +81,6 @@ public class Cuboid : IComparable<Cuboid>
 
     private Wall CreateWallWithVertices(int indexA, int indexB, int indexC, int indexD)
     {
-        var poly = CreatePolygonWithVertices(indexA, indexB, indexC, indexD);
         var points = new List<Point3D>()
         {
             _vertices[indexA],
@@ -92,46 +89,9 @@ public class Cuboid : IComparable<Cuboid>
             _vertices[indexD]
         };
 
-        return new Wall(poly, points);
+        return new Wall(points, _edgeBrush, _wallBrush);
     }
     
-    // Create a polygon with the given vertices (by index)
-    private Polygon CreatePolygonWithVertices(int indexA, int indexB, int indexC, int indexD)
-    {
-        var a = Projector.ProjectPoint(_vertices[indexA]);
-        var b = Projector.ProjectPoint(_vertices[indexB]);
-        var c = Projector.ProjectPoint(_vertices[indexC]);
-        var d = Projector.ProjectPoint(_vertices[indexD]);
-
-        var verticesOutOfSight = 0;
-        if (a.Z < 0) verticesOutOfSight++;
-        if (b.Z < 0) verticesOutOfSight++;
-        if (c.Z < 0) verticesOutOfSight++;
-        if (d.Z < 0) verticesOutOfSight++;
-
-        if (verticesOutOfSight > 0)
-        {
-            return new Polygon();
-        }
-
-        var points = new PointCollection
-        {
-            new Point(a.X, a.Y),
-            new Point(b.X, b.Y),
-            new Point(c.X, c.Y),
-            new Point(d.X, d.Y)
-        };
-
-        var poly = new Polygon
-        {
-            Points = points,
-            Stroke = _edgeBrush,
-            Fill = _wallBrush
-        };
-
-        return poly;
-    }
-
     public List<Wall> GetWalls()
     {
         return _walls;
@@ -178,8 +138,11 @@ public class Cuboid : IComparable<Cuboid>
         return sum / 6*4;
     }
     
+    
     public int CompareTo(Cuboid? other)
     {
+        // - 1 if in back
+        // 1 if in front
         if (GetCenterZ() > other.GetCenterZ()) return -1;
         return 1;
     }

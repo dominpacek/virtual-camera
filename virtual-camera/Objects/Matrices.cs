@@ -3,7 +3,7 @@ using System.Diagnostics;
 using MathNet.Numerics.LinearAlgebra;
 using virtual_camera.Enums;
 
-namespace virtual_camera;
+namespace virtual_camera.Objects;
 
 public static class Matrices
 {

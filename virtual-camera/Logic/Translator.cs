@@ -3,8 +3,9 @@ using System.Windows.Media.Media3D;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Double;
 using virtual_camera.Enums;
+using virtual_camera.Objects;
 
-namespace virtual_camera.Transformations;
+namespace virtual_camera.Logic;
 
 public static class Translator
 {
@@ -26,8 +27,8 @@ public static class Translator
     {
         var translationMatrix = Matrices.GetTranslationMatrix(direction, Camera.TranslationStep);
         
-        Vector<double> pointVector = new DenseVector(new[] {point.X, point.Y, point.Z, 1});
-        Vector<double> translatedVector = translationMatrix * pointVector;
+        var pointVector = new DenseVector(new[] {point.X, point.Y, point.Z, 1});
+        var translatedVector = translationMatrix * pointVector;
 
         var resultPoint = new Point3D(translatedVector[0], translatedVector[1], translatedVector[2]);
         return resultPoint;

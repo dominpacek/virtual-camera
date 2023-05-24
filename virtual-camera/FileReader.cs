@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows.Media.Media3D;
+using virtual_camera.Objects;
 
 namespace virtual_camera;
 
@@ -20,6 +21,7 @@ public static class FileReader
         Debug.WriteLine($"Loading scene {sceneNumber}...");
         var fileContent = ReadFile("Scenes/scene" + sceneNumber + ".txt");
         var cuboids = GenerateCuboids(fileContent);
+        
         return cuboids;
     }
 

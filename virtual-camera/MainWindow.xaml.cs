@@ -36,7 +36,6 @@ public partial class MainWindow
         Canvas.Children.Clear();
         _walls.Clear();
         _cuboids = Projector.ProjectCuboids(_cuboids).ToList();
-        _cuboids.Sort();
 
         foreach (var cuboid in _cuboids)
         {

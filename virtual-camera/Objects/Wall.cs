@@ -102,23 +102,23 @@ public class Wall : IComparable<Wall>
         var P = this;
         var Q = other;
 
-        if (P.Points.Min(p => p.Z) > Q.Points.Max(p => p.Z))
+        if (P.Points.Min(p => p.Z) >= Q.Points.Max(p => p.Z))
         {
             return -1;
         }
 
-        if (Q.Points.Max(p => p.Z) < P.Points.Min(p => p.Z))
+        if (P.Points.Max(p => p.Z) <= Q.Points.Min(p => p.Z))
         {
-            return -1;
+            return 1;
         }
 
-        if ((P.Points.Min(p => p.X) > Q.Points.Max(p => p.X) || Q.Points.Min(p => p.X) > P.Points.Min(p => p.X)) &&
-            P.Points.Min(p => p.Y) > Q.Points.Max(p => p.Y) || Q.Points.Min(p => p.Y) > P.Points.Min(p => p.Y))
+        // No overlap
+        if (P.Points.Min(p => p.X) > Q.Points.Max(p => p.X) || Q.Points.Min(p => p.X) > P.Points.Max(p => p.X) ||
+            P.Points.Min(p => p.Y) > Q.Points.Max(p => p.Y) || Q.Points.Min(p => p.Y) > P.Points.Max(p => p.Y))
         {
             return 0;
         }
 
-        // Behind plane
         double res = 0;
         foreach (var v in P.Points)
         {
@@ -129,7 +129,6 @@ public class Wall : IComparable<Wall>
         if (res == 0) return 0;
 
 
-        // Ahead of plane
         res = 0;
         foreach (var v in Q.Points)
         {
@@ -140,29 +139,17 @@ public class Wall : IComparable<Wall>
         if (res == 0) return 0;
 
 
-        // Ahead plane
-        res = 0;
-        foreach (var v in P.Points)
+        if (PlaneMath.IsPointInFrontOfPlaneFromOrigin(P.GetCenter(), Q.Points) < 0)
         {
-            res += PlaneMath.PlaneOffset(v, Q.Points);
+            return -1;
         }
 
-        if (res > 0) return 1;
-        if (res == 0) return 0;
-
+        if (PlaneMath.IsPointInFrontOfPlaneFromOrigin(Q.GetCenter(), P.Points) < 0)
+        {
+            return 1;
+        }
         
-        // Behind plane
-        res = 0;
-        foreach (var v in Q.Points)
-        {
-            res += PlaneMath.PlaneOffset(v, P.Points);
-        }
-
-        if (res < 0) return 1;
-        if (res == 0) return 0;
-
-
-        return 1;
+        return 0;
     }
 
 

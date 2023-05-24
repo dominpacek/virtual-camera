@@ -10,13 +10,19 @@ public static class Hider
     {
         // Sort walls in order from farthest to closest
 
+        var count = 0;
         walls.Sort((p1, p2) => p2.GetMaxZ().CompareTo(p1.GetMaxZ()));
         for (var i = 0; i < walls.Count; i++)
         {
             var p = walls[i];
             for (var j = i + 1; j < walls.Count; j++)
             {
+                count++;
                 var q = walls[j];
+                if (!AreProjectionsOverlapping(p, q))
+                {
+                    continue;
+                }
                 // Swap the walls if p is closer than q
                 if (p.CompareTo(q) > 0)
                 {

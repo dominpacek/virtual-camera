@@ -53,7 +53,6 @@ public class Cuboid : IComparable<Cuboid>
         _walls.Add(CreateWallWithVertices(2, 3, 4, 5));
         _walls.Add(CreateWallWithVertices(4, 5, 6, 7));
         
-        _walls.Sort();
     }
 
     public Cuboid Translate(CameraMoveDirection direction)

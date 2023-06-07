@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using virtual_camera.Objects;
 
 namespace virtual_camera.Logic;
@@ -30,6 +31,11 @@ public static class Hider
                     i--;
                     break;
                 }
+            }
+            if (count > walls.Count * walls.Count)
+            {
+                Debug.WriteLine("Too many iterations");
+                break;
             }
         }
 
